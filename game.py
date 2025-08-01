@@ -4,7 +4,7 @@ import pygame
 
 # Здесь нужно импортировать класс Board. Импорт исключений для игры
 # с графическим интерфейсом не понадобится.
-...
+from gameparts import Board
 
 pygame.init()
 
@@ -97,7 +97,9 @@ def draw_figures(board):
 
 
 # Сюда нужно добавить функцию save_result().
-...
+def save_result(result):
+    with open('results.txt', 'a', encoding='utf-8') as f:
+        f.write(result + '\n')
 
 
 # В этой функции описана логика игры. Вам нужно её дополнить. По структуре 
@@ -131,7 +133,21 @@ def main():
                     # проверить на победу,
                     # проверить на ничью,
                     # сменить игрока. 
-                    ...
+                if game.board[clicked_row][clicked_col] == ' ':
+                    game.make_move(clicked_row, clicked_col, current_player)
+
+                    if game.check_win(current_player):
+                        result = f'Победили {current_player}.'
+                        print(result)
+                        save_result(result)
+                        running = False
+                    elif game.is_board_full():
+                        result = 'Ничья!'
+                        print(result)
+                        save_result(result)
+                        running = False
+
+                    current_player = 'O' if current_player == 'X' else 'X'
                     draw_figures(game.board)
         
         # Обновить окно игры.
@@ -160,7 +176,6 @@ if __name__ == '__main__':
 # from gameparts.exceptions import CellOccupiedError, FieldIndexError
 
 
-# # Вот она - новая функция!
 # def save_result(result):
 #     # Если нужно явно указать кодировку, добавьте параметр encoding='utf-8'.
 #     with open('results.txt', 'a') as f:
